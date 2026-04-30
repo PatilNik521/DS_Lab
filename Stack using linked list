@@ -1,91 +1,55 @@
-#include <iostream>
+# include <iostream>
+using namespace std;
 
-struct Node {
+class Node {
+    public:
     int data;
     Node* next;
-    Node(int val) : data(val), next(nullptr) {}
+    Node(int val) {
+        data = val;
+        next = NULL;
+    }
 };
 
-class Stack {
-private:
-    Node* top;
-    int size;
-
-public:
-    Stack() : top(nullptr), size(0) {}
-
-    void push(int val) {
-        Node* newNode = new Node(val);
-        newNode->next = top;
-        top = newNode;
-        size++;
+class Queue {
+    private:
+    Node* front;
+    Node* rear;
+    public:
+    Queue() {
+        front = rear = NULL;
     }
-
-    void pop() {
-        if (isEmpty()) {
-            std::cout << "Stack Underflow" << std::endl;
+    void enqueue(int val) {
+        Node* newNode = new Node(val);
+        if(!rear) {
+            front = rear = newNode;
             return;
         }
-        Node* temp = top;
-        top = top->next;
+        rear->next = newNode;
+        rear = newNode;
+    }
+    void dequeue() {
+        if(!front) return;
+        Node* temp = front;
+        front = front->next;
+        if(!front) rear = NULL;
         delete temp;
-        size--;
     }
-
-    int peek() {
-        if (isEmpty()) return -1;
-        return top->data;
+    int getFront() {
+        if(front) return front->data;
+        return -1;
     }
-
     bool isEmpty() {
-        return top == nullptr;
-    }
-
-    int getSize() {
-        return size;
-    }
-
-    void display() {
-        if (isEmpty()) return;
-        Node* temp = top;
-        while (temp) {
-            std::cout << temp->data << " -> ";
-            temp = temp->next;
-        }
-        std::cout << "NULL" << std::endl;
-    }
-
-    void clear() {
-        while (!isEmpty()) {
-            pop();
-        }
-    }
-
-    ~Stack() {
-        clear();
+        return front == NULL;
     }
 };
 
 int main() {
-    Stack s;
-    s.push(10);
-    s.push(20);
-    s.push(30);
-    
-    std::cout << "Stack elements: ";
-    s.display();
-    
-    std::cout << "Size: " << s.getSize() << std::endl;
-    std::cout << "Top: " << s.peek() << std::endl;
-    
-    s.pop();
-    std::cout << "After pop: ";
-    s.display();
-    
-    std::cout << "Is Empty: " << (s.isEmpty() ? "Yes" : "No") << std::endl;
-    
-    s.clear();
-    std::cout << "After clear, Is Empty: " << (s.isEmpty() ? "Yes" : "No") << std::endl;
-
+    Queue q;
+    q.enqueue(10);
+    q.enqueue(20);
+    cout << q.getFront() << "\n";
+    q.dequeue();
+    cout << q.getFront() << "\n";
     return 0;
 }
