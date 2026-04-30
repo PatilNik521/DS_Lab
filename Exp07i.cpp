@@ -1,80 +1,103 @@
-//Singlely linked list 
-#include<iostream>
+// Code for Operations in Singly Linked List
+
+#include <iostream>
 using namespace std;
 
-struct node
-{
-int data;
-node* next;
+struct Node {
+    int data;
+    Node* next;
 };
-node* head = NULL;
-int main()
-{
-int ch, x;
-cout<<"1 InsertBeg\n";
-cout<<"2 InsertEnd\n";
-cout<<"3 DeleteBeg\n";
-cout<<"4 Display\n";
-cout<<"5 Exit\n";
 
-while(true)
-{
-cin>>ch;
+class SinglyLinkedList {
+private:
+    Node* head;
+public:
+    SinglyLinkedList() : head(nullptr) {}
+    
+    void InsertAtPos(int data, int pos) {
+        Node* newNode = new Node();
+        newNode->data = data;
+        newNode->next = nullptr;
+        if (pos == 1) {
+            newNode->next = head;
+            head = newNode;
+        } else {
+            Node* temp = head;
+            for (int i = 1; i < pos - 1 && temp != nullptr; i++) {
+                temp = temp->next;
+            }
+            if (temp != nullptr) {
+                newNode->next = temp->next;
+                temp->next = newNode;
+            } else {
+                delete newNode; // Position is out of bounds
+            }
+        }
+    }
 
-switch(ch)
-{
-case 1:
-{
-cin>>x;
-node* n = new node;
-n->data = x;
-n->next = head;
-head = n;
-break;
-}
+    void DeleteAtPos(int pos) {
+        if (head == nullptr) return;
+        Node* temp = head;
+        if (pos == 1) {
+            head = temp->next;
+            delete temp;
+            return;
+        }
+        for (int i = 1; temp != nullptr && i < pos - 1; i++) {
+            temp = temp->next;
+        }
+        if (temp == nullptr || temp->next == nullptr) return;
+        Node* next = temp->next->next;
+        delete temp->next;
+        temp->next = next;
+    }
 
-case 2:
-{
-cin>>x;
-node* n = new node;
-n->data = x;
-n->next = NULL;
-if(head==NULL)
-{
-head = n;
-}
-else
-{
-node* t = head;
-while(t->next!=NULL)
-t = t->next;
-t->next = n;
-}
-break;
-}
-case 3:
-{
-if(head!=NULL)
-{
-node* t = head;
-head = head->next;
-delete t;
-}
-break;
-}
-case 4:
-{
-node* t = head;
-while(t!=NULL)
-{
-cout<<t->data<<" ";
-t = t->next;
-}
-cout<<endl;
-break;
-}
-case 5:
-return 0;
-}
-}
+    void Display() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    SinglyLinkedList sll;
+    int choice, data, pos;
+    do {
+        cout << "Menu:\n";
+        cout << "1. Insert At Beginning\n";
+        cout << "2. Insert At End\n";
+        cout << "3. Delete At Beginning\n";
+        cout << "4. Delete At End\n";
+        cout << "5. Insert At Position\n";
+        cout << "6. Delete At Position\n";
+        cout << "7. Display\n";
+        cout << "8. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 5:
+                cout << "Enter data and position: ";
+                cin >> data >> pos;
+                sll.InsertAtPos(data, pos);
+                break;
+            case 6:
+                cout << "Enter position to delete: ";
+                cin >> pos;
+                sll.DeleteAtPos(pos);
+                break;
+            case 7:
+                sll.Display();
+                break;
+            case 8:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice!\n";
+                break;
+        }
+    } while (choice != 8);
+    return 0;
 }
